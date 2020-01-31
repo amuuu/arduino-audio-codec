@@ -304,7 +304,7 @@ void LinkedList<T>::fill(int startIndex, int endIndex, T value)
     int counter = 0;
     if(moveToStart()) {
         do {
-            if(counter >= startIn && counter <= endIndex) {
+            if (counter >= startIn && counter <= endIndex) {
                 curr->element = value;
             }
             counter++;

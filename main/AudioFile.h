@@ -352,7 +352,9 @@ void AudioFile<T>::setNumSamplesPerChannel (int numSamples)
         
         // set any new samples to zero
         if (numSamples > originalSize)
-            std::fill (samples[i].begin() + originalSize, samples[i].end(), (T)0.);
+            // std::fill (samples[i].begin() + originalSize, samples[i].end(), (T)0.);
+            samples.fill(i + originalSize, samples.size()-1, (T) 0.); //not sure to whether use size-1 or size.
+
     }
 }
 
