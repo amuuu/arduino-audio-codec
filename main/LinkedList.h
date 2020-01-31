@@ -30,8 +30,9 @@ class LinkedList  {
     T& getCurrent();
     T& First() const;
     T& Last() const;
-    int getLength();
     void Append(T);
+    void resize(int);
+    int size();
     void DeleteLast();
     void DeleteFirst();
     void DeleteCurrent();
@@ -110,7 +111,7 @@ T& LinkedList<T>::Last() const
 }
 
 template<class T>
-int LinkedList<T>::getLength()
+int LinkedList<T>::size()
 {
   return length;
 }
@@ -269,8 +270,6 @@ void LinkedList<T>::Clear()
 template <class T>
 void LinkedList<T>::resize(int n)
 {
-    ListNode<T> * temp = head;
-
     if(length == 0)
         return false;
     
