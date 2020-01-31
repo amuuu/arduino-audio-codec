@@ -306,7 +306,7 @@ bool AudioFile<T>::setAudioBuffer (AudioBuffer& newBuffer)
     
     if (numChannels <= 0)
     {
-        assert (false && "The buffer your are trying to use has no channels");
+        // assert (false && "The buffer your are trying to use has no channels");
         return false;
     }
     
@@ -317,7 +317,9 @@ bool AudioFile<T>::setAudioBuffer (AudioBuffer& newBuffer)
     
     for (int k = 0; k < getNumChannels(); k++)
     {
-        assert (newBuffer[k].size() == numSamples);
+        // assert (newBuffer[k].size() == numSamples);
+        if (newBuffer[k].size() != numSamples)
+            return false; // not sure whether this is handled completely
         
         samples[k].resize (numSamples);
         
