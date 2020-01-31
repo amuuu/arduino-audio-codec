@@ -275,6 +275,9 @@ void LinkedList<T>::resize(int n)
         return false;
     
     else if(length > n) {
+        // If n is smaller than the current container size,
+        // the content is reduced to its first n elements,
+        // removing those beyond (and destroying them).
         int counter = 0;
         if(moveToStart())
             do {
@@ -285,7 +288,10 @@ void LinkedList<T>::resize(int n)
             } while (next());       
     }
     else {
-        T element = nullptr;
+        // If n is greater than the current container size,
+        // the content is expanded by inserting at the end as many elements
+        // as needed to reach a size of n. 
+        T element = nullptr; // Not sure about here
         Append(element);
 
     }
