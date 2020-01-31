@@ -31,6 +31,7 @@ class LinkedList  {
     T& First() const;
     T& Last() const;
     void Append(T);
+    void fill(int startIndex, int endIndex, T value);
     void resize(int);
     int size();
     void DeleteLast();
@@ -295,6 +296,20 @@ void LinkedList<T>::resize(int n)
 
     }
 
+}
+
+template <class T>
+void LinkedList<T>::fill(int startIndex, int endIndex, T value)
+{  
+    int counter = 0;
+    if(moveToStart()) {
+        do {
+            if(counter >= startIn && counter <= endIndex) {
+                curr->element = value;
+            }
+            counter++;
+        } while (next());
+    }
 }
 
 
