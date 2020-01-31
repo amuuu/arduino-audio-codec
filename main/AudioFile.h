@@ -374,7 +374,9 @@ void AudioFile<T>::setNumChannels (int numChannels)
         for (int i = originalNumChannels; i < numChannels; i++)
         {
             samples[i].resize (originalNumSamplesPerChannel);
-            std::fill (samples[i].begin(), samples[i].end(), (T)0.);
+            // std::fill (samples[i].begin(), samples[i].end(), (T)0.);
+            samples.fill(i, samples.size()-1, (T) 0.); //not sure to whether use size-1 or size.
+
         }
     }
 }
