@@ -136,7 +136,7 @@ private:
     int16_t twoBytesToInt (LinkedList<uint8_t>& source, int startIndex, Endianness endianness = Endianness::LittleEndian);
 
     // int getIndexOfString (std::vector<uint8_t>& source, std::string s);
-    int getIndexOfString (LinkedList<uint8_t>& source, std::string s);
+    int getIndexOfString (String source, String s);
 
     
     //=============================================================
@@ -456,7 +456,9 @@ bool AudioFile<T>::decodeWaveFile (String fileData)
     // then it is unlikely we'll able to read this file, so abort
     if (indexOfDataChunk == -1 || indexOfFormatChunk == -1 || headerChunkID != "RIFF" || format != "WAVE")
     {
-        std::cout << "ERROR: this doesn't seem to be a valid .WAV file" << std::endl;
+        // std::cout << "ERROR: this doesn't seem to be a valid .WAV file" << std::endl;
+        Serial.println("ERROR: this doesn't seem to be a valid .WAV file");
+
         return false;
     }
     
@@ -1024,14 +1026,15 @@ int16_t AudioFile<T>::twoBytesToInt (std::vector<uint8_t>& source, int startInde
 
 //=============================================================
 template <class T>
-int AudioFile<T>::getIndexOfString (std::vector<uint8_t>& source, std::string stringToSearchFor)
+int AudioFile<T>::getIndexOfString (String source, String stringToSearchFor)
 {
     int index = -1;
-    int stringLength = (int)stringToSearchFor.length();
+    int stringLength = (int) stringToSearchFor.length();
     
-    for (int i = 0; i < source.size() - stringLength;i++)
+    for (int i = 0; i < source.length() - stringLength;i++)
     {
-        std::string section (source.begin() + i, source.begin() + i + stringLength);
+        // std::string section (source.begin() + i, source.begin() + i + stringLength);
+        String section = splitString(source, i, i + stringLength);
         
         if (section == stringToSearchFor)
         {
