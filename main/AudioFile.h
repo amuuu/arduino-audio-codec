@@ -1,4 +1,5 @@
 #include "LinkedList.h"
+#include "Util.h"
 
 /** The different types of audio file, plus some other types to 
  * indicate a failure to load a file, or that one hasn't been
@@ -109,9 +110,9 @@ private:
     };
     
     //=============================================================
-    AudioFileFormat determineAudioFileFormat (LinkedList<uint8_t>& fileData);
+    AudioFileFormat determineAudioFileFormat (String fileData);
     // bool decodeWaveFile (std::vector<uint8_t>& fileData);
-    bool decodeWaveFile (LinkedList<uint8_t>& fileData);
+    bool decodeWaveFile (String fileData);
 
     // bool decodeAiffFile (std::vector<uint8_t>& fileData);
     // bool decodeAiffFile (LinkedList<uint8_t>& fileData);
@@ -420,26 +421,31 @@ bool AudioFile<T>::load (String fileData)
     {
         return decodeWaveFile (fileData);
     }
-    else if (audioFileFormat == AudioFileFormat::Aiff)
+    /*else if (audioFileFormat == AudioFileFormat::Aiff)
     {
         return decodeAiffFile (fileData);
-    }
+    }*/
     else
     {
-        std::cout << "Audio File Type: " << "Error" << std::endl;
+        // std::cout << "Audio File Type: " << "Error" << std::endl;
+        Serial.println("Audio file type error");
         return false;
     }
 }
 
 //=============================================================
 template <class T>
-bool AudioFile<T>::decodeWaveFile (std::vector<uint8_t>& fileData)
+bool AudioFile<T>::decodeWaveFile (String fileData)
 {
     // -----------------------------------------------------------
     // HEADER CHUNK
-    std::string headerChunkID (fileData.begin(), fileData.begin() + 4);
+    // std::string headerChunkID (fileData.begin(), fileData.begin() + 4);
+    String header = splitString(fileData, 0, 4);
+
     //int32_t fileSizeInBytes = fourBytesToInt (fileData, 4) + 8;
-    std::string format (fileData.begin() + 8, fileData.begin() + 12);
+    // std::string format (fileData.begin() + 8, fileData.begin() + 12);
+    String format = splitString(fileData, 8, 12);
+
     
     // -----------------------------------------------------------
     // try and find the start points of key chunks
@@ -978,10 +984,7 @@ template <class T>
 AudioFileFormat AudioFile<T>::determineAudioFileFormat (String fileData)
 {
     // std::string header (fileData.begin(), fileData.begin() + 4);
-    String header = "";
-    for (int i=0; i<4; i++) {
-        header += fileData[i];
-    }
+    String header = splitString(fileData, 0, 4);
 
     if (header == "RIFF")
         return AudioFileFormat::Wave;
