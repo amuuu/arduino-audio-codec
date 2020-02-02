@@ -30,14 +30,14 @@ public:
      * @Returns true if the file was successfully loaded
      */
     // bool load (std::string filePath);
-    bool load (char[] filePath);
+    bool load (String filePath);
 
     
     /** Saves an audio file to a given file path.
      * @Returns true if the file was successfully saved
      */
     // bool save (std::string filePath, AudioFileFormat format = AudioFileFormat::Wave);
-    bool save (char[] filePath, AudioFileFormat format = AudioFileFormat::Wave);
+    bool save (String filePath, AudioFileFormat format = AudioFileFormat::Wave);
 
         
     //=============================================================
@@ -118,10 +118,10 @@ private:
     
     //=============================================================
     // bool saveToWaveFile (std::string filePath);
-    bool saveToWaveFile (char[] filePath);
+    bool saveToWaveFile (String filePath);
 
     // bool saveToAiffFile (std::string filePath);
-    // bool saveToAiffFile (char[] filePath);
+    // bool saveToAiffFile (String filePath);
 
     
     //=============================================================
@@ -170,7 +170,7 @@ private:
     
     //=============================================================
     // bool writeDataToFile (std::vector<uint8_t>& fileData, std::string filePath);
-    bool writeDataToFile (LinkedList<uint8_t>& fileData, char[] filePath);
+    bool writeDataToFile (LinkedList<uint8_t>& fileData, String filePath);
 
     
     //=============================================================
@@ -397,21 +397,21 @@ void AudioFile<T>::setSampleRate (uint32_t newSampleRate)
 
 //=============================================================
 template <class T>
-bool AudioFile<T>::load (std::string filePath)
+bool AudioFile<T>::load (String fileData)
 {
-    std::ifstream file (filePath, std::ios::binary);
+    //std::ifstream file (filePath, std::ios::binary);
     
     // check the file exists
-    if (! file.good())
-    {
-        std::cout << "ERROR: File doesn't exist or otherwise can't load file" << std::endl;
-        std::cout << filePath << std::endl;
-        return false;
-    }
+    // if (! file.good())
+    // {
+        // std::cout << "ERROR: File doesn't exist or otherwise can't load file" << std::endl;
+        // std::cout << filePath << std::endl;
+        // return false;
+    // }
     
-    file.unsetf (std::ios::skipws);
-    std::istream_iterator<uint8_t> begin (file), end;
-    std::vector<uint8_t> fileData (begin, end);
+    // file.unsetf (std::ios::skipws);
+    // std::istream_iterator<uint8_t> begin (file), end; 
+    // std::vector<uint8_t> fileData (begin, end);
     
     // get audio file format
     audioFileFormat = determineAudioFileFormat (fileData);
@@ -975,14 +975,18 @@ void AudioFile<T>::clearAudioBuffer()
 
 //=============================================================
 template <class T>
-AudioFileFormat AudioFile<T>::determineAudioFileFormat (std::vector<uint8_t>& fileData)
+AudioFileFormat AudioFile<T>::determineAudioFileFormat (String fileData)
 {
-    std::string header (fileData.begin(), fileData.begin() + 4);
-    
+    // std::string header (fileData.begin(), fileData.begin() + 4);
+    String header = "";
+    for (int i=0; i<4; i++) {
+        header += fileData[i];
+    }
+
     if (header == "RIFF")
         return AudioFileFormat::Wave;
-    else if (header == "FORM")
-        return AudioFileFormat::Aiff;
+    // else if (header == "FORM")
+        // return AudioFileFormat::Aiff;
     else
         return AudioFileFormat::Error;
 }
