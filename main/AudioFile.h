@@ -535,13 +535,13 @@ bool AudioFile<T>::decodeWaveFile (String fileData)
             if (bitDepth == 8)
             {
                 T sample = singleByteToSample (fileData[sampleIndex]);
-                samples[channel].push_back (sample);
+                samples[channel].Append(sample);
             }
             else if (bitDepth == 16)
             {
                 int16_t sampleAsInt = twoBytesToInt (fileData, sampleIndex);
                 T sample = sixteenBitIntToSample (sampleAsInt);
-                samples[channel].push_back (sample);
+                samples[channel].Append(sample);
             }
             else if (bitDepth == 24)
             {
@@ -552,11 +552,11 @@ bool AudioFile<T>::decodeWaveFile (String fileData)
                     sampleAsInt = sampleAsInt | ~0xFFFFFF; // so make sure sign is extended to the 32 bit float
 
                 T sample = (T)sampleAsInt / (T)8388608.;
-                samples[channel].push_back (sample);
+                samples[channel].Append(sample);
             }
             else
             {
-                assert (false);
+                return false;
             }
         }
     }
