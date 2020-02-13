@@ -465,7 +465,9 @@ bool AudioFile<T>::decodeWaveFile (String fileData)
     // -----------------------------------------------------------
     // FORMAT CHUNK
     int f = indexOfFormatChunk;
-    std::string formatChunkID (fileData.begin() + f, fileData.begin() + f + 4);
+    // String formatChunkID (fileData.begin() + f, fileData.begin() + f + 4);
+    String formatChunkID = splitString(fileData, f, f + 4);
+
     //int32_t formatChunkSize = fourBytesToInt (fileData, f + 4);
     int16_t audioFormat = twoBytesToInt (fileData, f + 8);
     int16_t numChannels = twoBytesToInt (fileData, f + 10);
@@ -1012,7 +1014,7 @@ int32_t AudioFile<T>::fourBytesToInt (std::vector<uint8_t>& source, int startInd
 
 //=============================================================
 template <class T>
-int16_t AudioFile<T>::twoBytesToInt (std::vector<uint8_t>& source, int startIndex, Endianness endianness)
+int16_t AudioFile<T>::twoBytesToInt (String source, int startIndex, Endianness endianness)
 {
     int16_t result;
     
