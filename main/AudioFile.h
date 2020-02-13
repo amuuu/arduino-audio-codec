@@ -151,7 +151,7 @@ private:
     // uint32_t getAiffSampleRate (LinkedList<uint8_t>& fileData, int sampleRateStartIndex);
 
     // bool tenByteMatch (std::vector<uint8_t>& v1, int startIndex1, std::vector<uint8_t>& v2, int startIndex2);
-    bool tenByteMatch (LinkedList<uint8_t>& v1, int startIndex1, std::vector<uint8_t>& v2, int startIndex2);
+    // bool tenByteMatch (LinkedList<uint8_t>& v1, int startIndex1, std::vector<uint8_t>& v2, int startIndex2);
 
     // void addSampleRateToAiffData (std::vector<uint8_t>& fileData, uint32_t sampleRate);
     // void addSampleRateToAiffData (LinkedList<uint8_t>& fileData, uint32_t sampleRate);
@@ -565,7 +565,7 @@ bool AudioFile<T>::decodeWaveFile (String fileData)
 }
 
 //=============================================================
-template <class T>
+/*template <class T>
 bool AudioFile<T>::decodeAiffFile (std::vector<uint8_t>& fileData)
 {
     // -----------------------------------------------------------
@@ -678,10 +678,10 @@ bool AudioFile<T>::decodeAiffFile (std::vector<uint8_t>& fileData)
     }
     
     return true;
-}
+}*/
 
 //=============================================================
-template <class T>
+/*template <class T>
 uint32_t AudioFile<T>::getAiffSampleRate (std::vector<uint8_t>& fileData, int sampleRateStartIndex)
 {
     for (auto it : aiffSampleRateTable)
@@ -691,10 +691,10 @@ uint32_t AudioFile<T>::getAiffSampleRate (std::vector<uint8_t>& fileData, int sa
     }
     
     return 0;
-}
+}*/
 
 //=============================================================
-template <class T>
+/*template <class T>
 bool AudioFile<T>::tenByteMatch (std::vector<uint8_t>& v1, int startIndex1, std::vector<uint8_t>& v2, int startIndex2)
 {
     for (int i = 0; i < 10; i++)
@@ -704,10 +704,10 @@ bool AudioFile<T>::tenByteMatch (std::vector<uint8_t>& v1, int startIndex1, std:
     }
     
     return true;
-}
+}*/
 
 //=============================================================
-template <class T>
+/*template <class T>
 void AudioFile<T>::addSampleRateToAiffData (std::vector<uint8_t>& fileData, uint32_t sampleRate)
 {
     if (aiffSampleRateTable.count (sampleRate) > 0)
@@ -715,7 +715,7 @@ void AudioFile<T>::addSampleRateToAiffData (std::vector<uint8_t>& fileData, uint
         for (int i = 0; i < 10; i++)
             fileData.push_back (aiffSampleRateTable[sampleRate][i]);
     }
-}
+}*/
 
 //=============================================================
 template <class T>
@@ -725,10 +725,10 @@ bool AudioFile<T>::save (std::string filePath, AudioFileFormat format)
     {
         return saveToWaveFile (filePath);
     }
-    else if (format == AudioFileFormat::Aiff)
+    /*else if (format == AudioFileFormat::Aiff)
     {
         return saveToAiffFile (filePath);
-    }
+    }*/
     
     return false;
 }
