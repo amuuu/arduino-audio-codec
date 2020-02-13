@@ -1000,7 +1000,7 @@ AudioFileFormat AudioFile<T>::determineAudioFileFormat (String fileData)
 
 //=============================================================
 template <class T>
-int32_t AudioFile<T>::fourBytesToInt (std::vector<uint8_t>& source, int startIndex, Endianness endianness)
+int32_t AudioFile<T>::fourBytesToInt (String source, int startIndex, Endianness endianness)
 {
     int32_t result;
     
