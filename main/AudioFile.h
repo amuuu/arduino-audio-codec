@@ -481,35 +481,43 @@ bool AudioFile<T>::decodeWaveFile (String fileData)
     // check that the audio format is PCM
     if (audioFormat != 1)
     {
-        std::cout << "ERROR: this is a compressed .WAV file and this library does not support decoding them at present" << std::endl;
+        // std::cout << "ERROR: this is a compressed .WAV file and this library does not support decoding them at present" << std::endl;
+        Serial.println("ERROR: this is a compressed .WAV file and this library does not support decoding them at present");
+
         return false;
     }
     
     // check the number of channels is mono or stereo
     if (numChannels < 1 ||numChannels > 2)
     {
-        std::cout << "ERROR: this WAV file seems to be neither mono nor stereo (perhaps multi-track, or corrupted?)" << std::endl;
+        // std::cout << "ERROR: this WAV file seems to be neither mono nor stereo (perhaps multi-track, or corrupted?)" << std::endl;
+        Serial.println("ERROR: this WAV file seems to be neither mono nor stereo (perhaps multi-track, or corrupted?)");
+
         return false;
     }
     
     // check header data is consistent
     if ((numBytesPerSecond != (numChannels * sampleRate * bitDepth) / 8) || (numBytesPerBlock != (numChannels * numBytesPerSample)))
     {
-        std::cout << "ERROR: the header data in this WAV file seems to be inconsistent" << std::endl;
+        // std::cout << "ERROR: the header data in this WAV file seems to be inconsistent" << std::endl;
+        Serial.println("ERROR: the header data in this WAV file seems to be inconsistent");
+
         return false;
     }
     
     // check bit depth is either 8, 16 or 24 bit
     if (bitDepth != 8 && bitDepth != 16 && bitDepth != 24)
     {
-        std::cout << "ERROR: this file has a bit depth that is not 8, 16 or 24 bits" << std::endl;
+        // std::cout << "ERROR: this file has a bit depth that is not 8, 16 or 24 bits" << std::endl;
+        Serial.println("ERROR: this file has a bit depth that is not 8, 16 or 24 bits");
+
         return false;
     }
     
     // -----------------------------------------------------------
     // DATA CHUNK
     int d = indexOfDataChunk;
-    std::string dataChunkID (fileData.begin() + d, fileData.begin() + d + 4);
+    String dataChunkID = splitString(fileData.begin() + d, fileData.begin() + d + 4);
     int32_t dataChunkSize = fourBytesToInt (fileData, d + 4);
     
     int numSamples = dataChunkSize / (numChannels * bitDepth / 8);
