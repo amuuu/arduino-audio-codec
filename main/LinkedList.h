@@ -42,7 +42,7 @@ class LinkedList  {
     bool prev();
     void Delete(T&);
     bool Search(T);
-    void Clear();
+    void clear();
     void PutFirstToLast();
     void Update(T elem);
     LinkedList& operator = (const LinkedList<T>&);
@@ -75,7 +75,7 @@ LinkedList<T>::LinkedList(const LinkedList<T> & list) {
 template <class T>
 LinkedList<T> & LinkedList<T>::operator=(const LinkedList<T> & list)
 {
-    Clear();
+    clear();
 
     ListNode<T> * temp = list.head;
 
@@ -90,7 +90,7 @@ LinkedList<T> & LinkedList<T>::operator=(const LinkedList<T> & list)
 
 template <class T>
 LinkedList<T>::~LinkedList() {
-    Clear();
+    clear();
 }
 
 template<class T>
@@ -251,7 +251,7 @@ void LinkedList<T>::Update(T elem)
 }
 
 template <class T>
-void LinkedList<T>::Clear()
+void LinkedList<T>::clear()
 {
     if(length == 0)
         return;
