@@ -160,7 +160,7 @@ private:
     
     //=============================================================
     // void addStringToFileData (std::vector<uint8_t>& fileData, std::string s);
-    void addStringToFileData (String fileData, std::string s);
+    void addStringToFileData (LinkedList<uint8_t> fileData, String s);
 
     // void addInt32ToFileData (std::vector<uint8_t>& fileData, int32_t i, Endianness endianness = Endianness::LittleEndian);
     void addInt32ToFileData (LinkedList<uint8_t>& fileData, int32_t i, Endianness endianness = Endianness::LittleEndian);
@@ -783,10 +783,10 @@ bool AudioFile<T>::writeDataToFile (std::vector<uint8_t>& fileData, std::string 
 
 //=============================================================
 template <class T>
-void AudioFile<T>::addStringToFileData (std::vector<uint8_t>& fileData, std::string s)
+void AudioFile<T>::addStringToFileData (LinkedList<uint8_t>& fileData, String s)
 {
     for (int i = 0; i < s.length();i++)
-        fileData.push_back ((uint8_t) s[i]);
+        fileData.Append((uint8_t) s[i]);
 }
 
 //=============================================================
