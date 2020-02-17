@@ -652,13 +652,14 @@ bool AudioFile<T>::saveToWaveFile (String filePath)
                 bytes[1] = (uint8_t) (sampleAsIntAgain >>  8) & 0xFF;
                 bytes[0] = (uint8_t) sampleAsIntAgain & 0xFF;
                 
-                fileData.push_back (bytes[0]);
-                fileData.push_back (bytes[1]);
-                fileData.push_back (bytes[2]);
+                fileData.Append(bytes[0]);
+                fileData.Append(bytes[1]);
+                fileData.Append(bytes[2]);
             }
             else
             {
-                assert (false && "Trying to write a file with unsupported bit depth");
+                // assert (false && "Trying to write a file with unsupported bit depth");
+                Serial.println("Trying to write a file with unsupported bit depth");
                 return false;
             }
         }
@@ -667,7 +668,9 @@ bool AudioFile<T>::saveToWaveFile (String filePath)
     // check that the various sizes we put in the metadata are correct
     if (fileSizeInBytes != (fileData.size() - 8) || dataChunkSize != (getNumSamplesPerChannel() * getNumChannels() * (bitDepth / 8)))
     {
-        std::cout << "ERROR: couldn't save file to " << filePath << std::endl;
+        // std::cout << "ERROR: couldn't save file to " << filePath << std::endl;
+        Serial.println("ERROR: couldn't save file to ", filePath);
+
         return false;
     }
     
