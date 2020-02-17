@@ -130,10 +130,10 @@ private:
     
     //=============================================================
     // int32_t fourBytesToInt (std::vector<uint8_t>& source, int startIndex, Endianness endianness = Endianness::LittleEndian);
-    int32_t fourBytesToInt (LinkedList<uint8_t>& source, int startIndex, Endianness endianness = Endianness::LittleEndian);
+    int32_t fourBytesToInt (String source, int startIndex, Endianness endianness = Endianness::LittleEndian);
 
     // int16_t twoBytesToInt (std::vector<uint8_t>& source, int startIndex, Endianness endianness = Endianness::LittleEndian);
-    int16_t twoBytesToInt (LinkedList<uint8_t>& source, int startIndex, Endianness endianness = Endianness::LittleEndian);
+    int16_t twoBytesToInt (String source, int startIndex, Endianness endianness = Endianness::LittleEndian);
 
     // int getIndexOfString (std::vector<uint8_t>& source, std::string s);
     int getIndexOfString (String source, String s);
@@ -160,7 +160,7 @@ private:
     
     //=============================================================
     // void addStringToFileData (std::vector<uint8_t>& fileData, std::string s);
-    void addStringToFileData (LinkedList<uint8_t>& fileData, std::string s);
+    void addStringToFileData (String fileData, std::string s);
 
     // void addInt32ToFileData (std::vector<uint8_t>& fileData, int32_t i, Endianness endianness = Endianness::LittleEndian);
     void addInt32ToFileData (LinkedList<uint8_t>& fileData, int32_t i, Endianness endianness = Endianness::LittleEndian);
@@ -488,7 +488,7 @@ bool AudioFile<T>::decodeWaveFile (String fileData)
     }
     
     // check the number of channels is mono or stereo
-    if (numChannels < 1 ||numChannels > 2)
+    if (numChannels < 1 || numChannels > 2)
     {
         // std::cout << "ERROR: this WAV file seems to be neither mono nor stereo (perhaps multi-track, or corrupted?)" << std::endl;
         Serial.println("ERROR: this WAV file seems to be neither mono nor stereo (perhaps multi-track, or corrupted?)");
@@ -735,9 +735,9 @@ bool AudioFile<T>::save (std::string filePath, AudioFileFormat format)
 
 //=============================================================
 template <class T>
-bool AudioFile<T>::saveToWaveFile (std::string filePath)
+bool AudioFile<T>::saveToWaveFile (String filePath)
 {
-    std::vector<uint8_t> fileData;
+    LinkedList<uint8_t> fileData;
     
     int32_t dataChunkSize = getNumSamplesPerChannel() * (getNumChannels() * bitDepth / 8);
     
