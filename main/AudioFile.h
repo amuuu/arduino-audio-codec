@@ -613,16 +613,16 @@ bool AudioFile<T>::saveToWaveFile (String filePath)
     addStringToFileData (fileData, "fmt ");
     addInt32ToFileData (fileData, 16); // format chunk size (16 for PCM)
     addInt16ToFileData (fileData, 1); // audio format = 1
-    addInt16ToFileData (fileData, (int16_t)getNumChannels()); // num channels
-    addInt32ToFileData (fileData, (int32_t)sampleRate); // sample rate
+    addInt16ToFileData (fileData, (uint16_t)getNumChannels()); // num channels
+    addInt32ToFileData (fileData, (uint32_t)sampleRate); // sample rate
     
-    int32_t numBytesPerSecond = (int32_t) ((getNumChannels() * sampleRate * bitDepth) / 8);
+    int32_t numBytesPerSecond = (uint32_t) ((getNumChannels() * sampleRate * bitDepth) / 8);
     addInt32ToFileData (fileData, numBytesPerSecond);
     
     int16_t numBytesPerBlock = getNumChannels() * (bitDepth / 8);
     addInt16ToFileData (fileData, numBytesPerBlock);
     
-    addInt16ToFileData (fileData, (int16_t)bitDepth);
+    addInt16ToFileData (fileData, (uint16_t)bitDepth);
     
     // -----------------------------------------------------------
     // DATA CHUNK
@@ -791,7 +791,7 @@ void AudioFile<T>::addStringToFileData (LinkedList<uint8_t>& fileData, String s)
 
 //=============================================================
 template <class T>
-void AudioFile<T>::addInt32ToFileData (std::vector<uint8_t>& fileData, int32_t i, Endianness endianness)
+void AudioFile<T>::addInt32ToFileData (LinkedList<uint8_t>& fileData, uint32_t i, Endianness endianness)
 {
     uint8_t bytes[4];
     
@@ -811,12 +811,12 @@ void AudioFile<T>::addInt32ToFileData (std::vector<uint8_t>& fileData, int32_t i
     }
     
     for (int i = 0; i < 4; i++)
-        fileData.push_back (bytes[i]);
+        fileData.Append(bytes[i]);
 }
 
 //=============================================================
 template <class T>
-void AudioFile<T>::addInt16ToFileData (std::vector<uint8_t>& fileData, int16_t i, Endianness endianness)
+void AudioFile<T>::addInt16ToFileData (LinkedList<uint8_t>& fileData, uint16_t i, Endianness endianness)
 {
     uint8_t bytes[2];
     
@@ -831,8 +831,8 @@ void AudioFile<T>::addInt16ToFileData (std::vector<uint8_t>& fileData, int16_t i
         bytes[1] = i & 0xFF;
     }
     
-    fileData.push_back (bytes[0]);
-    fileData.push_back (bytes[1]);
+    fileData.Append(bytes[0]);
+    fileData.Append(bytes[1]);
 }
 
 //=============================================================
@@ -947,8 +947,12 @@ T AudioFile<T>::singleByteToSample (uint8_t sample)
 template <class T>
 T AudioFile<T>::clamp (T value, T minValue, T maxValue)
 {
-    value = std::min (value, maxValue);
-    value = std::max (value, minValue);
+    // value = std::min (value, maxValue);
+    value = ((value < minValue) ? value : minValue);
+
+    // value = std::max (value, minValue);
+    value = ((value > maxValue) ? value : maxValue);
+
     return value;
 }
 
