@@ -147,14 +147,8 @@ private:
     uint8_t sampleToSingleByte (T sample);
     T singleByteToSample (uint8_t sample);
     
-    // uint32_t getAiffSampleRate (std::vector<uint8_t>& fileData, int sampleRateStartIndex);
-    // uint32_t getAiffSampleRate (LinkedList<uint8_t>& fileData, int sampleRateStartIndex);
-
     // bool tenByteMatch (std::vector<uint8_t>& v1, int startIndex1, std::vector<uint8_t>& v2, int startIndex2);
     // bool tenByteMatch (LinkedList<uint8_t>& v1, int startIndex1, std::vector<uint8_t>& v2, int startIndex2);
-
-    // void addSampleRateToAiffData (std::vector<uint8_t>& fileData, uint32_t sampleRate);
-    // void addSampleRateToAiffData (LinkedList<uint8_t>& fileData, uint32_t sampleRate);
 
     T clamp (T v1, T minValue, T maxValue);
     
@@ -179,31 +173,6 @@ private:
     uint32_t sampleRate;
     int bitDepth;
 };
-
-
-//=============================================================
-// Pre-defined 10-byte representations of common sample rates
-// static std::unordered_map <uint32_t, std::vector<uint8_t>> aiffSampleRateTable = {
-    // {8000, {64, 11, 250, 0, 0, 0, 0, 0, 0, 0}},
-    // {11025, {64, 12, 172, 68, 0, 0, 0, 0, 0, 0}},
-    // {16000, {64, 12, 250, 0, 0, 0, 0, 0, 0, 0}},
-    // {22050, {64, 13, 172, 68, 0, 0, 0, 0, 0, 0}},
-    // {32000, {64, 13, 250, 0, 0, 0, 0, 0, 0, 0}},
-    // {37800, {64, 14, 147, 168, 0, 0, 0, 0, 0, 0}},
-    // {44056, {64, 14, 172, 24, 0, 0, 0, 0, 0, 0}},
-    // {44100, {64, 14, 172, 68, 0, 0, 0, 0, 0, 0}},
-    // {47250, {64, 14, 184, 146, 0, 0, 0, 0, 0, 0}},
-    // {48000, {64, 14, 187, 128, 0, 0, 0, 0, 0, 0}},
-    // {50000, {64, 14, 195, 80, 0, 0, 0, 0, 0, 0}},
-    // {50400, {64, 14, 196, 224, 0, 0, 0, 0, 0, 0}},
-    // {88200, {64, 15, 172, 68, 0, 0, 0, 0, 0, 0}},
-    // {96000, {64, 15, 187, 128, 0, 0, 0, 0, 0, 0}},
-    // {176400, {64, 16, 172, 68, 0, 0, 0, 0, 0, 0}},
-    // {192000, {64, 16, 187, 128, 0, 0, 0, 0, 0, 0}},
-    // {352800, {64, 17, 172, 68, 0, 0, 0, 0, 0, 0}},
-    // {2822400, {64, 20, 172, 68, 0, 0, 0, 0, 0, 0}},
-    // {5644800, {64, 21, 172, 68, 0, 0, 0, 0, 0, 0}}
-// };
 
 //=============================================================
 /* IMPLEMENTATION */
@@ -678,93 +647,10 @@ bool AudioFile<T>::saveToWaveFile (String filePath)
     return writeDataToFile (fileData, filePath);
 }
 
-//=============================================================
-template <class T>
-bool AudioFile<T>::saveToAiffFile (std::string filePath)
-{
-    std::vector<uint8_t> fileData;
-    
-    int32_t numBytesPerSample = bitDepth / 8;
-    int32_t numBytesPerFrame = numBytesPerSample * getNumChannels();
-    int32_t totalNumAudioSampleBytes = getNumSamplesPerChannel() * numBytesPerFrame;
-    int32_t soundDataChunkSize = totalNumAudioSampleBytes + 8;
-    
-    // -----------------------------------------------------------
-    // HEADER CHUNK
-    addStringToFileData (fileData, "FORM");
-    
-    // The file size in bytes is the header chunk size (4, not counting FORM and AIFF) + the COMM
-    // chunk size (26) + the metadata part of the SSND chunk plus the actual data chunk size
-    int32_t fileSizeInBytes = 4 + 26 + 16 + totalNumAudioSampleBytes;
-    addInt32ToFileData (fileData, fileSizeInBytes, Endianness::BigEndian);
-    
-    addStringToFileData (fileData, "AIFF");
-    
-    // -----------------------------------------------------------
-    // COMM CHUNK
-    addStringToFileData (fileData, "COMM");
-    addInt32ToFileData (fileData, 18, Endianness::BigEndian); // commChunkSize
-    addInt16ToFileData (fileData, getNumChannels(), Endianness::BigEndian); // num channels
-    addInt32ToFileData (fileData, getNumSamplesPerChannel(), Endianness::BigEndian); // num samples per channel
-    addInt16ToFileData (fileData, bitDepth, Endianness::BigEndian); // bit depth
-    addSampleRateToAiffData (fileData, sampleRate);
-    
-    // -----------------------------------------------------------
-    // SSND CHUNK
-    addStringToFileData (fileData, "SSND");
-    addInt32ToFileData (fileData, soundDataChunkSize, Endianness::BigEndian);
-    addInt32ToFileData (fileData, 0, Endianness::BigEndian); // offset
-    addInt32ToFileData (fileData, 0, Endianness::BigEndian); // block size
-    
-    for (int i = 0; i < getNumSamplesPerChannel(); i++)
-    {
-        for (int channel = 0; channel < getNumChannels(); channel++)
-        {
-            if (bitDepth == 8)
-            {
-                uint8_t byte = sampleToSingleByte (samples[channel][i]);
-                fileData.push_back (byte);
-            }
-            else if (bitDepth == 16)
-            {
-                int16_t sampleAsInt = sampleToSixteenBitInt (samples[channel][i]);
-                addInt16ToFileData (fileData, sampleAsInt, Endianness::BigEndian);
-            }
-            else if (bitDepth == 24)
-            {
-                int32_t sampleAsIntAgain = (int32_t) (samples[channel][i] * (T)8388608.);
-                
-                uint8_t bytes[3];
-                bytes[0] = (uint8_t) (sampleAsIntAgain >> 16) & 0xFF;
-                bytes[1] = (uint8_t) (sampleAsIntAgain >>  8) & 0xFF;
-                bytes[2] = (uint8_t) sampleAsIntAgain & 0xFF;
-                
-                fileData.push_back (bytes[0]);
-                fileData.push_back (bytes[1]);
-                fileData.push_back (bytes[2]);
-            }
-            else
-            {
-                assert (false && "Trying to write a file with unsupported bit depth");
-                return false;
-            }
-        }
-    }
-    
-    // check that the various sizes we put in the metadata are correct
-    if (fileSizeInBytes != (fileData.size() - 8) || soundDataChunkSize != getNumSamplesPerChannel() *  numBytesPerFrame + 8)
-    {
-        std::cout << "ERROR: couldn't save file to " << filePath << std::endl;
-        return false;
-    }
-    
-    // try to write the file
-    return writeDataToFile (fileData, filePath);
-}
 
 //=============================================================
 template <class T>
-bool AudioFile<T>::writeDataToFile (std::vector<uint8_t>& fileData, std::string filePath)
+bool AudioFile<T>::writeDataToFile (LinkedList<uint8_t>& fileData, String filePath)
 {
     std::ofstream outputFile (filePath, std::ios::binary);
     
